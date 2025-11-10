@@ -1,38 +1,20 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
-import { Userservice } from './user.service';
-import { User } from './user.schema';
+import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Userservice } from "./user.service";
+import { Users } from "./user.schema";
 
-@Controller('user')
-export class UserController {
-  constructor(private readonly Userservice: Userservice) {}
-  
-  @Post()
-  create(@Body() body: Partial<User>) {
-    return this.Userservice.create(body);
-  }
+@Controller('api/user')
+export class UserController{
+    constructor(private readonly UserService:Userservice){}
 
-  @Get()
-  findAll() {
-    return this.Userservice.findAll();
-  }
+    @Post('Register')
+    RegisterUser(@Body() RegDetails:Partial<Users>){
+        // console.log(RegDetails);
+       return this.UserService.RegisterUser(RegDetails)
+    }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.Userservice.findOne(id);
-  }
-
-  @Put(':id')
-  update(@Param('id') id: string, @Body() body: Partial<User>) {
-    return this.Userservice.update(id, body);
-  }
-
-  @Patch(':id')
-  updatePartial(@Param('id') id: string, @Body() body: Partial<User>) {
-    return this.Userservice.updatePartial(id, body);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.Userservice.remove(id);
-  }
+    @Post('login')
+    LoginUser(@Body() loginDetails:Partial<Users>){
+        // console.log(RegDetails);
+       return this.UserService.LoginUser(loginDetails)
+    }
 }
