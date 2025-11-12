@@ -10,8 +10,8 @@ export const MESSAGES = {
   DELETED: 'Product deleted successfully!',
   NOT_FOUND: 'Product not found!',
   ERROR: 'Something went wrong!',
-  EMAIL_SUCESS:'Welcome email sent!',
-  RESET_EMAIL:'Password reset email sent!'
+  EMAIL_SUCESS: 'Welcome email sent!',
+  RESET_EMAIL: 'Password reset email sent!',
 };
 
 export const ROLES = {

@@ -14,7 +14,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ProductService } from '../services/products.service';
-import { Product } from '../schemas/products.schema';
+// import { Product } from '../schemas/products.schema';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { extname } from 'path';
 import { diskStorage } from 'multer';
@@ -133,7 +133,7 @@ export class ProductController {
     }
     const images = files.map((file) => `/uploads/${file.filename}`);
     productDtls.images = images;
-    return this.productService.CreateProduct(productDtls);
+    return this.productService.createProduct(productDtls);
   }
 
   @Get()

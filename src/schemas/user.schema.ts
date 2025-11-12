@@ -1,30 +1,30 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, Types } from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-import { Roles } from "src/schemas/roles.schema";
+import { Roles } from 'src/schemas/roles.schema';
 
-export type UserDocument=Users &Document
+export type UserDocument = Users & Document;
 
-@Schema({timestamps:true})
-export class Users extends Document{
-    @Prop({required:true})
-    name:string
+@Schema({ timestamps: true })
+export class Users extends Document {
+  @Prop({ required: true })
+  name: string;
 
-    @Prop({required:true})
-    email:string
+  @Prop({ required: true })
+  email: string;
 
-    @Prop({required:true})
-    password:string
+  @Prop({ required: true })
+  password: string;
 
-    @Prop({ type: Types.ObjectId, ref: 'Role', required: true })
-    role: Roles | Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'Role', required: true })
+  role: Roles | Types.ObjectId;
 }
 
-export const UserSchema=SchemaFactory.createForClass(Users)
+export const UserSchema = SchemaFactory.createForClass(Users);
 
-UserSchema.pre('save',async function (next) {
-      if (!this.isModified('password')) return next();
-    const hash=await bcrypt.hash(this.password,10)
-    this.password=hash
-    next()
-})
+UserSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  const hash = await bcrypt.hash(this.password, 10);
+  this.password = hash;
+  next();
+});

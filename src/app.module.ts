@@ -1,4 +1,4 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -16,21 +16,23 @@ import { ProductService } from './services/products.service';
 import { Roles, RoleSchema } from './schemas/roles.schema';
 import { Users, UserSchema } from './schemas/user.schema';
 import { Product, ProductSchema } from './schemas/products.schema';
-import { MailerModule, MailerService } from '@nestjs-modules/mailer';
+import { MailerModule } from '@nestjs-modules/mailer';
 import { MailController } from './controllers/mail.controller';
 import { MailService } from './services/mail.service';
 import { CronService } from './services/cron.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { BullModule } from '@nestjs/bull';
-import { QueueProcessor } from './services/queue.processer';
+// import { EmailService } from './services/email.service';
+import { EmailModule } from './email.module';
+import { Connection } from 'mongoose';
 
 @Module({
   imports: [
     // SeedModule,
     MongooseModule.forRoot('mongodb://localhost:27017/nestjs', {
-      connectionFactory: (connection) => {
+      connectionFactory: (connection: Connection) => {
         console.log('✅ MongoDB connected successfully!');
-        connection.on('error', (err) =>
+        connection.on('error', (err: Error) =>
           console.error('MongoDB connection error:', err),
         );
         return connection;
@@ -53,7 +55,6 @@ import { QueueProcessor } from './services/queue.processer';
       { name: Product.name, schema: ProductSchema },
     ]),
 
-   
     MailerModule.forRoot({
       transport: {
         host: 'smtp.gmail.com',
@@ -61,7 +62,7 @@ import { QueueProcessor } from './services/queue.processer';
         secure: false,
         auth: {
           user: process.env.MAIL || 'kiruthika.t3910@gmail.com',
-          pass: process.env.MAILPASS || 'cyab eboj jmrh ovqk', 
+          pass: process.env.MAILPASS || 'cyab eboj jmrh ovqk',
         },
       },
       defaults: {
@@ -69,19 +70,30 @@ import { QueueProcessor } from './services/queue.processer';
       },
     }),
 
-     ScheduleModule.forRoot(),
+    ScheduleModule.forRoot(),
 
-     BullModule.forRoot({
+    BullModule.forRoot({
       redis: {
-        host: 'localhost',
+        host: '127.0.0.1',
         port: 6379,
       },
     }),
-    BullModule.registerQueue({
-      name: 'tasks', // queue name
-    }),
+
+    EmailModule,
   ],
-  controllers: [AppController, UserController, ProductController,MailController],
-  providers: [AppService, SeedService, Userservice, ProductService,MailService ,CronService,QueueProcessor],
+  controllers: [
+    AppController,
+    UserController,
+    ProductController,
+    MailController,
+  ],
+  providers: [
+    AppService,
+    SeedService,
+    Userservice,
+    ProductService,
+    MailService,
+    CronService,
+  ],
 })
 export class AppModule {}

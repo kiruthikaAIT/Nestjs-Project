@@ -1,5 +1,5 @@
 // mail.controller.ts
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { MailService } from 'src/services/mail.service';
 import { MESSAGES } from 'src/utils/const';
 
@@ -23,5 +23,4 @@ export class MailController {
     await this.mailService.sendPasswordReset(email, name, resetLink);
     return { success: true, message: MESSAGES.RESET_EMAIL };
   }
-
 }

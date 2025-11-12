@@ -31,8 +31,18 @@ export class SeedService implements OnApplicationBootstrap {
     const userRole = await this.roleModel.findOne({ name: 'user' });
     if (!adminRole || !userRole) throw new Error('Roles not found!');
     const users = [
-      { name: 'Admin', email: 'admin@example.com', password: 'Admin@123', role: adminRole._id },
-      { name: 'kiruthika', email: 'kiruthika@gmail.com', password: 'kiruthikat910', role: userRole._id },
+      {
+        name: 'Admin',
+        email: 'admin@example.com',
+        password: 'Admin@123',
+        role: adminRole._id,
+      },
+      {
+        name: 'kiruthika',
+        email: 'kiruthika@gmail.com',
+        password: 'kiruthikat910',
+        role: userRole._id,
+      },
     ];
     for (const u of users) {
       const exists = await this.userModel.findOne({ email: u.email });

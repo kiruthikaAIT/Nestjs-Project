@@ -1,7 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-export type productDocument = HydratedDocument<Product>;
+export type productDocument = HydratedDocument<
+  Product & { createdAt: Date; updatedAt: Date }
+>;
 
 @Schema({ timestamps: true })
 export class Product {

@@ -54,7 +54,7 @@ export class UpdateProductDto {
   @IsOptional()
   images?: string[];
 
-  @Type(()=>Boolean)
+  @Type(() => Boolean)
   @IsBoolean({ message: 'InStock must be boolean' })
   @IsOptional()
   InStock?: boolean;

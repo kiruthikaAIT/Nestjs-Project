@@ -14,7 +14,7 @@ export class MailService {
       <html>
         <body>
           <h1>Welcome to Our App 🎉</h1>
-          <p>Hi ${name || ""},</p>
+          <p>Hi ${name || ''},</p>
           <p>We are excited to have you onboard. Explore our app and enjoy the features!</p>
           <p>Cheers,<br/>The Team</p>
         </body>
@@ -26,16 +26,16 @@ export class MailService {
         to,
         subject: 'Welcome to Our App 🎉',
         html,
-        text: `Hi ${name||""}, Welcome to our app! Explore and enjoy the features. Cheers, The Team`,
+        text: `Hi ${name || ''}, Welcome to our app! Explore and enjoy the features. Cheers, The Team`,
       });
       this.logger.log(`Welcome email sent to ${to}`);
     } catch (error) {
       this.logger.error(`Failed to send welcome email to ${to}`, error);
-      throw error; 
+      throw error;
     }
   }
 
-  // Password reset email 
+  // Password reset email
   async sendPasswordReset(to: string, name: string, resetLink: string) {
     const html = `
       <html>
@@ -64,5 +64,4 @@ export class MailService {
       throw error;
     }
   }
-
 }
