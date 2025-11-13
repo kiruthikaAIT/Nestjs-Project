@@ -7,21 +7,21 @@ export class CronService {
   private readonly logger = new Logger(CronService.name);
   constructor(private readonly emailService: EmailService) {}
 
-  // Run every 10 seconds
-  @Cron('*/10 * * * * *')
-  handleCron() {
-    this.logger.debug('Called every 10 seconds');
-  }
+  // // Run every 10 seconds
+  // @Cron('*/10 * * * * *')
+  // handleCron() {
+  //   this.logger.debug('Called every 10 seconds');
+  // }
 
-  @Cron('0 37 18 * * *')
-  handleCrontime() {
-    this.logger.debug('Caled at 6:37 pm');
-  }
+  // @Cron('0 37 18 * * *')
+  // handleCrontime() {
+  //   this.logger.debug('Caled at 6:37 pm');
+  // }
 
-  @Cron(CronExpression.EVERY_MINUTE)
-  handleEveryMinute() {
-    this.logger.debug('Called every minute');
-  }
+  // @Cron(CronExpression.EVERY_MINUTE)
+  // handleEveryMinute() {
+  //   this.logger.debug('Called every minute');
+  // }
 
   // Runs every 10 seconds
   // @Cron('*/10 * * * * *')

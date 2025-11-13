@@ -5,6 +5,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -126,7 +127,7 @@ export class ProductController {
     @Body() productDtls: CreateProductDto,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
-    // console.log(productDtls);
+    console.log(productDtls);
 
     if (!files || files.length === 0) {
       throw new BadRequestException('At least one image is required');
@@ -176,40 +177,59 @@ export class ProductController {
       },
     }),
   )
-  async update(
-    @Param('id') id: string,
-    @Body() updateData: UpdateProductDto,
-    @UploadedFiles() files?: Express.Multer.File[],
-  ) {
-    if (files && files.length > 0) {
-      const images = files.map((file) => `/uploads/${file.filename}`);
-      updateData.images = images;
-    }
+async update(
+  @Param('id') id: string,
+  @Body() updateData: UpdateProductDto,
+  @UploadedFiles() files?: Express.Multer.File[],
+) {
+  // ✅ Parse existing images if sent
+  const existingImages = updateData.existingImages
+    ? JSON.parse(updateData.existingImages)
+    : [];
 
-    return await this.productService.updateProduct(id, updateData);
+  // ✅ Combine existing + new images
+  if (files && files.length > 0) {
+    const uploaded = files.map((file) => `/uploads/${file.filename}`);
+    updateData.images = [...existingImages, ...uploaded];
+  } else {
+    updateData.images = existingImages;
   }
+
+  delete updateData.existingImages; // clean up
+
+  return await this.productService.updateProduct(id, updateData);
+}
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return await this.productService.deleteProduct(id);
   }
-
   @Get('filter')
   async filterProducts(
     @Query('name') name?: string,
     @Query('startDate') startDate?: string,
-    @Query('endDate') endDate?: string,
     @Query('InStock') InStock?: string,
+    @Query('page', new ParseIntPipe({ optional: true })) page = 1,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit = 10,
   ) {
-    console.log(InStock);
-
-    const products = await this.productService.filterProducts({
+    const filters = {
       name,
       startDate,
-      endDate,
-      InStock:
-        InStock === 'true' ? true : InStock === 'false' ? false : undefined,
-    });
-    return products;
+      InStock: InStock === 'true' ? true : InStock === 'false' ? false : undefined,
+    };
+
+    const { products, total } = await this.productService.filterProducts(filters, page, limit);
+
+    return {
+      success: true,
+      data: products,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
+
 }

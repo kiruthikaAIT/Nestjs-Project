@@ -53,33 +53,32 @@ export class ProductService extends BaseService<productDocument> {
     return { success: true, message: MESSAGES.DELETED };
   }
 
-  async filterProducts(filter: {
-    name?: string;
-    startDate?: string;
-    endDate?: string;
-    InStock?: boolean;
-  }): Promise<Product[]> {
-    // Type-safe query
+  async filterProducts(
+    filter: { name?: string; startDate?: string; InStock?: boolean },
+    page = 1,
+    limit = 10,
+  ) {
     const query: FilterQuery<productDocument> = {};
 
-    // Create filter strategies
     const strategies: FilterStrategy<productDocument>[] = [];
     if (filter.name) strategies.push(new NameFilter(filter.name));
-    if (filter.InStock !== undefined)
-      strategies.push(new StockFilter(filter.InStock));
-    if (filter.startDate || filter.endDate)
-      strategies.push(new DateRangeFilter(filter.startDate, filter.endDate));
+    if (filter.InStock !== undefined) strategies.push(new StockFilter(filter.InStock));
+    if (filter.startDate) strategies.push(new DateRangeFilter(filter.startDate));
 
-    // Apply strategies
     strategies.forEach((strategy) => strategy.apply(query));
 
-    const products = await this.productModel.find(query).exec();
+    const total = await this.productModel.countDocuments(query).exec();
+    const products = await this.productModel
+      .find(query)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .exec();
 
     if (!products || products.length === 0) {
       throw new NotFoundException(MESSAGES.NOT_FOUND);
     }
 
-    return products;
+    return { products, total };
   }
 
   // FILTER PRODUCTS

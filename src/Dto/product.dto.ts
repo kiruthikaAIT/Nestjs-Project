@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsString,
   IsNotEmpty,
@@ -29,6 +29,7 @@ export class CreateProductDto {
   @IsOptional()
   images?: string[];
 
+   @Transform(({ value }) => value === 'true')
   @Type(() => Boolean)
   @IsBoolean({ message: 'InStock must be boolean' })
   @IsNotEmpty({ message: 'InStock is required' })
@@ -54,6 +55,11 @@ export class UpdateProductDto {
   @IsOptional()
   images?: string[];
 
+    @IsOptional()
+  @IsString()
+  existingImages?: string; 
+
+ @Transform(({ value }) => value === 'true')
   @Type(() => Boolean)
   @IsBoolean({ message: 'InStock must be boolean' })
   @IsOptional()

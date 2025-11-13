@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
@@ -27,8 +28,9 @@ export class Userservice extends IUserService {
     const { name, email, password } = RegDetails;
 
     const existingUser = await this.UsersModel.findOne({ email });
-    if (existingUser) return { message: MESSAGES.USER_ALREADY_EXISTS };
-
+    if (existingUser) {
+      throw new ConflictException(MESSAGES.USER_ALREADY_EXISTS);
+    }
     const userRole = await this.RolesModel.findOne({ name: ROLES.USER });
     if (!userRole)
       throw new InternalServerErrorException(MESSAGES.USER_NOT_FOUND);

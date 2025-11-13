@@ -87,7 +87,7 @@ import { Connection } from 'mongoose';
     ProductController,
     MailController,
   ],
-  providers: [
+  providers: [   
     AppService,
     SeedService,
     Userservice,

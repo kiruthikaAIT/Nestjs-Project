@@ -13,7 +13,7 @@ dotenv.config({ path: envPath });
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  app.enableCors();
   // Enable global validation pipe
   app.useGlobalPipes(
     new ValidationPipe({

@@ -20,17 +20,16 @@ export class StockFilter implements FilterStrategy<productDocument> {
 }
 
 export class DateRangeFilter implements FilterStrategy<productDocument> {
-  constructor(
-    private startDate?: string,
-    private endDate?: string,
-  ) {}
+  constructor(private startdate?: string) {} // only a single date
 
   apply(query: FilterQuery<productDocument>): void {
-    const createdAtFilter: FilterQuery<productDocument['createdAt']> = {};
-    if (this.startDate) createdAtFilter.$gte = new Date(this.startDate);
-    if (this.endDate) createdAtFilter.$lte = new Date(this.endDate);
-    if (Object.keys(createdAtFilter).length > 0) {
-      query.createdAt = createdAtFilter;
+    if (this.startdate) {
+      const start = new Date(this.startdate);
+      start.setHours(0, 0, 0, 0); // start of day
+      const end = new Date(this.startdate);
+      end.setHours(23, 59, 59, 999); // end of day
+
+      query.createdAt = { $gte: start, $lte: end };
     }
   }
 }
